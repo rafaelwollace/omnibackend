@@ -77,7 +77,7 @@ jobs:
           source: "./"  
           target: "/home/ec2-user/app"  
 
-      # Conectar via SSH e rodar o Docker Compose na EC2
+      
       - name: SSH into EC2 and run Docker Compose
         uses: appleboy/ssh-action@v0.1.5
         with:

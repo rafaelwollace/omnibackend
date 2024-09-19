@@ -11,7 +11,6 @@ export class CustomersService {
   ) {}
 
   async create(customerData: Customer): Promise<Customer> {
-    // Aqui você pode adicionar lógica extra, como verificar se o CPF ou e-mail já existe
     return this.customerRepository.save(customerData);
   }
 }
