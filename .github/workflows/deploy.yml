@@ -38,7 +38,7 @@ jobs:
           source: "./" # Pasta do projeto
           target: "/home/ec2-user/app" # Local no EC2
 
-      # Conectar via SSH e rodar a aplicação
+    
       - name: SSH into EC2 and start application
         uses: appleboy/ssh-action@v0.1.5
         with:
