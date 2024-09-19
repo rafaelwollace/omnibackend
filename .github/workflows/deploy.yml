@@ -76,6 +76,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "./"  
           target: "/home/ec2-user/app"  
+          rm: true  # Teste de remover arquivos locais 
 
       
       - name: SSH into EC2 and run Docker Compose
