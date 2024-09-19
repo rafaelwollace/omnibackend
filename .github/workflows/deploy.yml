@@ -1,0 +1,51 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Clonar o repositório
+      - uses: actions/checkout@v3
+
+      # Configurar o Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Instalar dependências
+      - name: Install dependencies
+        run: npm ci
+
+      # Build da aplicação (se necessário)
+      - name: Build the project
+        run: npm run build  # Exemplo de build, ajuste conforme necessário
+
+      # Transferir arquivos para a EC2 via SSH
+      - name: Transfer files to EC2
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "./" # Pasta do projeto
+          target: "/home/ec2-user/app" # Local no EC2
+
+      # Conectar via SSH e rodar a aplicação
+      - name: SSH into EC2 and start application
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ec2-user/app
+            npm install
+            npm start  # Comando para rodar o servidor Node.js
