@@ -4,7 +4,7 @@ services:
     build: .
     container_name: omnibackend
     ports:
-      - "3000:3000"
+      - "80:3000"  # Mapeia a porta 80 do host para a porta 3000 do container
     volumes:
       - .:/app
       - /app/node_modules
