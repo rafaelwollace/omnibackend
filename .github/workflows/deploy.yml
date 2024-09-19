@@ -3,30 +3,69 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - dev
-      - main
+      - dev  # Executa quando há push na branch dev
+      - main  # Executa quando há push na branch main
 
 jobs:
-  build_and_deploy:
+  audit_dev:
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
-
     steps:
       # Clonar o repositório
       - uses: actions/checkout@v3
-
+        with:
+          fetch-depth: 0  
+      
       # Configurar o Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-
+      
       # Instalar dependências
       - name: Install dependencies
-        run: npm ci
+        run: npm ci  # Instala as dependências do projeto
 
-      # Build da aplicação (se necessário)
+      # Rodar auditoria de segurança
+      - name: Run npm audit
+        run: npm audit --audit-level=high  # Falha se houver vulnerabilidades graves
+      
+      # Criar Pull Request de dev para main se passar na auditoria
+      - name: Create Pull Request from dev to main
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        run: |
+          git config --global user.name "rafaelwollace"
+          git config --global user.email "rafael.cunha@gmail.com"
+          gh pr create --title "Merge dev to main" --body "PR criada automaticamente após passar no npm audit." --base main --head dev
+
+  deploy_to_ec2:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      # Clonar o repositório
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Garantir que todas as branches sejam trazidas
+      
+      # Configurar o Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      # Instalar dependências
+      - name: Install dependencies
+        run: npm ci  # Instala as dependências do projeto
+      
+      # Rodar auditoria de segurança
+      - name: Run npm audit
+        run: npm audit --audit-level=high  # Falha se houver vulnerabilidades graves
+      
+      # Build da aplicação
       - name: Build the project
-        run: npm run build  # Exemplo de build, ajuste conforme necessário
+        run: npm run build  # Cria o build da aplicação (Vite gera na pasta dist/)
 
       # Transferir arquivos para a EC2 via SSH
       - name: Transfer files to EC2
@@ -35,11 +74,11 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "./" # Pasta do projeto
-          target: "/home/ec2-user/app" # Local no EC2
+          source: "./"  # Pasta do projeto
+          target: "/home/ec2-user/app"  # Local na EC2
 
-    
-      - name: SSH into EC2 and start application
+      # Conectar via SSH e rodar o Docker Compose na EC2
+      - name: SSH into EC2 and run Docker Compose
         uses: appleboy/ssh-action@v0.1.5
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -47,5 +86,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ec2-user/app
-            npm install
-            npm start  # Comando para rodar o servidor Node.js
+            docker-compose down  # Para containers existentes, se houver
+            docker-compose up --build -d  # Para subir os containers com Docker Compose
