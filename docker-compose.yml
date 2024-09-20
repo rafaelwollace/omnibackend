@@ -11,3 +11,5 @@ services:
     command: npm run start:dev
     environment:
       - NODE_ENV=development
+    env_file:
+      - .env  # Adiciona esta linha para carregar o arquivo .env
