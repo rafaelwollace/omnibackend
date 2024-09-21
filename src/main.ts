@@ -14,11 +14,10 @@ async function bootstrap() {
     }),
   );
 
-  // Habilitar CORS aqui
   app.enableCors({
-    origin: '*', // Permite todas as origens. Para maior controle, especifique uma origem específica.
+    origin: '*', 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true, // Se for necessário enviar cookies ou autenticação
+    credentials: true,
   });
 
   const config = new DocumentBuilder()
