@@ -16,7 +16,7 @@ async function bootstrap() {
 
   // Habilitar CORS aqui
   app.enableCors({
-    origin: ['http://18.188.60.38', 'http://localhost:3000'], // Permitir tanto o S3 quanto o localhost
+    origin: '*', // Permite todas as origens. Para maior controle, especifique uma origem específica.
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, // Se for necessário enviar cookies ou autenticação
   });
