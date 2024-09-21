@@ -15,17 +15,12 @@ Após clonar o projeto, edite o arquivo `.env`, localizado na raiz do projeto, e
 
 DB_HOST=seu_host DB_PORT=3306 DB_USERNAME=seu_usuario DB_PASSWORD=sua_senha DB_NAME=seu_banco
 
-bash
-Copiar código
 
 ### 3. Rodar o Docker
 
 Com o Docker já instalado na sua máquina, execute o seguinte comando na raiz do projeto para iniciar a aplicação:
 
 docker-compose up -d
-
-yaml
-Copiar código
 
 Este comando irá construir e iniciar o container em segundo plano.
 
