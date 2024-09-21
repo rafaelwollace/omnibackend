@@ -36,7 +36,7 @@ Após a execução do Docker, o backend estará disponível em:
 
 O frontend da aplicação está disponível publicamente em:
 
-- [http://ommininfront.s3.us-east-2.amazonaws.com/index.html](http://ommininfront.s3.us-east-2.amazonaws.com/index.html)
+- [http://18.188.60.38/](http://18.188.60.38/)
 
 ---
 
@@ -48,4 +48,4 @@ Este projeto utiliza um processo de deploy automatizado para o frontend e backen
 
 1. **Criar branch de feature**: Nenhuma ação automática é executada neste momento.
 2. **Merge para a branch `dev`**: Após o merge, o pipeline roda o comando `npm audit`. Se o `npm audit` passar sem vulnerabilidades, uma Pull Request (PR) é criada automaticamente para a branch `main`, que deve ser revisada e aceita manualmente.
-3. **Merge na branch `main`**: Após a PR ser aceita na `main`, o deploy é realizado automaticamente, enviando os arquivos para o bucket S3 configurado para o frontend.
+3. **Merge na branch `main`**: Após a PR ser aceita na `main`, o deploy é realizado automaticamente, enviando os arquivos para UM EC2 Subindo a aplicacao via docker.
